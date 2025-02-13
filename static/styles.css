@@ -1,0 +1,25 @@
+/* Ustawienia ogólne */
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+/* Kontener dla stron (logowanie, rejestracja, index) */
+.container {
+    max-width: 600px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+/* Przyciski na stronie głównej */
+.btn-space {
+    margin-right: 10px;
+}
+
+/* Formularze logowania i rejestracji */
+.form-container {
+    max-width: 400px;
+}

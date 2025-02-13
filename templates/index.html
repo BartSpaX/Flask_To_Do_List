@@ -5,25 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do App</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center">To-Do List (REST API)</h2>
+    <div class="container mt-3">
+        <!-- Nagłówek - tytuł na środku -->
+        <div class="text-center">
+            <h2 class="mb-4">To-Do List (REST API)</h2>
+        </div>
 
-        <!-- Formularz dodawania zadania -->
-        <form id="taskForm" class="d-flex mb-3">
-            <input type="text" id="taskInput" class="form-control" placeholder="Dodaj nowe zadanie" required>
-            <button type="submit" class="btn btn-primary ms-2">Dodaj</button>
-        </form>
+        <!-- Pasek nawigacyjny -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                {% if current_user.is_authenticated and current_user.role == "admin" %}
+                    <a href="/admin" class="btn btn-warning">Panel Admina</a>
+                {% endif %}
+            </div>
+            
+            <div>
+                {% if current_user.is_authenticated %}
+                    <span class="me-3">Zalogowano jako: <strong>{{ current_user.username }}</strong></span>
+                    <a href="/logout" class="btn btn-danger">Wyloguj</a>
+                {% else %}
+                    <a href="/login" class="btn btn-primary btn-space">Zaloguj</a>
+                    <a href="/register" class="btn btn-secondary ms-2">Zarejestruj</a>
+                {% endif %}
+            </div>
+        </div>
 
-        <h4>Zadania do wykonania:</h4>
-        <ul id="tasksList" class="list-group"></ul>
+        {% if current_user.is_authenticated %}
+            <h4>Dodaj zadanie:</h4>
+            <form id="taskForm" class="d-flex mb-3">
+                <input type="text" id="taskInput" class="form-control" placeholder="Dodaj nowe zadanie" required>
+                <button type="submit" class="btn btn-primary ms-2">Dodaj</button>
+            </form>
 
-        <h4 class="mt-4">Ukończone zadania:</h4>
-        <ul id="completedTasksList" class="list-group"></ul>
+            <h4>Zadania do wykonania:</h4>
+            <ul id="tasksList" class="list-group"></ul>
+
+            <h4 class="mt-4">Ukończone zadania:</h4>
+            <ul id="completedTasksList" class="list-group"></ul>
+
+            <script src="{{ url_for('static', filename='main.js') }}"></script>
+        {% endif %}
     </div>
 
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
