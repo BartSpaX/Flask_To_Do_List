@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, User, Task, bcrypt
 
 app = Flask(__name__)
@@ -75,6 +74,49 @@ def admin():
         return redirect(url_for("home"))
     users = User.query.filter(User.role == "user").all()
     return render_template("admin.html", users=users)
+
+@app.route("/admin/manage-users")
+@login_required
+def manage_users():
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+    users = User.query.all()
+    return render_template("manage_users.html", users=users)
+
+@app.route("/admin/manage-users/user/<int:user_id>")
+@login_required
+def edit_user(user_id):
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+    user = User.query.get(user_id)
+    if not user:
+        return "Użytkownik nie istnieje!", 404
+    return render_template("edit_user.html", user=user)
+
+@app.route("/admin/manage-users/user/<int:user_id>/edit", methods=["POST"])
+@login_required
+def update_user(user_id):
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+    user = User.query.get(user_id)
+    if not user:
+        return "Użytkownik nie istnieje!", 404
+    user.username = request.form["username"]
+    user.role = request.form["role"]
+    db.session.commit()
+    return redirect(url_for("manage_users"))
+
+@app.route("/admin/manage-users/user/delete-user/<int:user_id>", methods=["POST"])
+@login_required
+def delete_user(user_id):
+    if current_user.role != "admin":
+        return redirect(url_for("home"))
+    user = User.query.get(user_id)
+    if not user:
+        return "Użytkownik nie istnieje!", 404
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"Użytkownik {user.username} został usunięty."}), 200
 
 # API: Pobieranie zadań użytkownika
 @app.route("/api/tasks", methods=["GET"])
