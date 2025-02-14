@@ -118,6 +118,36 @@ def delete_user(user_id):
     db.session.commit()
     return jsonify({"message": f"Użytkownik {user.username} został usunięty."}), 200
 
+@app.route("/admin/manage-users/user/add", methods=["POST"])
+@login_required
+def add_new_user():
+    if not current_user.is_authenticated or current_user.role != "admin":
+        return jsonify({"error": "Brak uprawnień"}), 403
+
+    try:
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
+        role = data.get("role", "user")
+
+        if not username or not password:
+            return jsonify({"error": "Wszystkie pola są wymagane."}), 400
+
+        if User.query.filter_by(username=username).first():
+            return jsonify({"error": "Użytkownik o takiej nazwie już istnieje."}), 409
+
+        hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
+        new_user = User(username=username, password=hashed_password, role=role)
+        
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"message": f"Użytkownik {username} został dodany jako {role}!"}), 201
+
+    except Exception as e:
+        db.session.rollback()  # Cofnięcie transakcji w razie błędu
+        return jsonify({"error": f"Błąd serwera: {str(e)}"}), 500
+
 # API: Pobieranie zadań użytkownika
 @app.route("/api/tasks", methods=["GET"])
 @login_required
@@ -183,6 +213,30 @@ def assign_task():
     db.session.commit()
 
     return jsonify({"message": f"Zadanie '{title}' przypisane do {user.username}"}), 201
+
+@app.route("/user/settings", methods=["GET"])
+@login_required
+def user_settings():
+    return render_template("user_settings.html")
+
+@app.route("/user/settings/edit", methods=["POST"])
+@login_required
+def edit_your_account():
+    # if current_user.id != user_id:
+    #     return jsonify({"error": "Brak uprawnień do tej opercaji!"}), 403
+    
+    data = request.get_json()
+    username = data.get("username")
+
+    if User.query.filter_by(username=username).first():
+            return jsonify({"error": "Nazwa użytkownika jest już zajęta!"})
+            
+    user = User.query.get(current_user.id)
+
+    user.username = username
+    db.session.commit()
+    return jsonify({"message": "Zapisano ustawienia!"})
+
 
 if __name__ == "__main__":
     app.run(debug=True)

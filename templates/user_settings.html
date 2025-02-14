@@ -23,7 +23,9 @@
             </div>
             <div>
                 {% if current_user.is_authenticated %}
-                    <a href="/user/settings" class="btn btn-warning">Panel Użytkownika</a>
+                <div>
+                    <a href="/" class="btn btn-secondary">Powrót do strony głównej</a>
+                </div>
                 {% endif %}
             </div>
             
@@ -39,19 +41,22 @@
         </div>
 
         {% if current_user.is_authenticated %}
-            <h4>Dodaj zadanie:</h4>
-            <form id="taskForm" class="d-flex mb-3">
-                <input type="text" id="taskInput" class="form-control" placeholder="Dodaj nowe zadanie" required>
-                <button type="submit" class="btn btn-primary ms-2">Dodaj</button>
-            </form>
+            <div class="container mt-3">
+                <h2 class="text-center">Zmień ustawienia konta</h2>
+        
+                <form id="editUserForm">
+                    <div class="mb-3">
+                        <label for="newUsername" class="form-label">Nazwa użytkownika</label>
+                        <input type="text" id="newUsername" class="form-control" value="{{ current_user.username }}" required>
+                    </div>
+                    
+                    <button type="button" onclick="editUser()" class="btn btn-success">Zapisz zmiany</button>
+                    <a href="/user/settings" class="btn btn-secondary">Anuluj</a>
+                </form>
+            </div>
+            <p id="editUserMessage"></p>
 
-            <h4>Zadania do wykonania:</h4>
-            <ul id="tasksList" class="list-group"></ul>
-
-            <h4 class="mt-4">Ukończone zadania:</h4>
-            <ul id="completedTasksList" class="list-group"></ul>
-
-            <script src="{{ url_for('static', filename='main.js') }}"></script>
+            <script src="{{ url_for('static', filename='user_settings.js') }}"></script>
         {% endif %}
     </div>
 

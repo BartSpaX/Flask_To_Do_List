@@ -5,8 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edytuj użytkownika</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            {% if current_user.is_authenticated and current_user.role == "admin" %}
+                <a href="/admin" class="btn btn-warning">Panel Admina</a>
+            {% endif %}
+        </div>
+        <div>
+            {% if current_user.is_authenticated %}
+                <a href="/user/settings" class="btn btn-warning">Panel Użytkownika</a>
+            {% endif %}
+        </div>
+        
+        <div>
+            {% if current_user.is_authenticated %}
+                <span class="me-3">Zalogowano jako: <strong>{{ current_user.username }}</strong></span>
+                <a href="/logout" class="btn btn-danger">Wyloguj</a>
+            {% else %}
+                <a href="/login" class="btn btn-primary btn-space">Zaloguj</a>
+                <a href="/register" class="btn btn-secondary ms-2">Zarejestruj</a>
+            {% endif %}
+        </div>
+    </div>
     <div class="container mt-3">
         <h2 class="text-center">Edytuj użytkownika: {{ user.username }}</h2>
 

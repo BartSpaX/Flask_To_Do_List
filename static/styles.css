@@ -6,7 +6,7 @@ body {
 
 /* Kontener dla stron (logowanie, rejestracja, index) */
 .container {
-    max-width: 600px;
+    max-width: 1000px;
     background: white;
     padding: 20px;
     border-radius: 10px;

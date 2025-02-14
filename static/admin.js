@@ -56,3 +56,33 @@ function deleteUser() {
     .catch(error => alert("Błąd: " + error.message));
 }
 
+function createUser() {
+    const username = document.getElementById("newUsername").value.trim();
+    const password = document.getElementById("newPassword").value.trim();
+    const role = document.getElementById("newRole").value;
+    const messageElement = document.getElementById("addUserMessage");
+
+    if (!username || !password) {
+        messageElement.innerHTML = '<span class="text-danger">Wszystkie pola są wymagane.</span>';
+        return;
+    }
+
+    fetch("/admin/manage-users/user/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, role })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            messageElement.innerHTML = `<span class="text-danger">${data.error}</span>`;
+        } else {
+            messageElement.innerHTML = `<span class="text-success">${data.message}</span>`;
+            document.getElementById("addUserForm").reset();
+            setTimeout(() => window.location.reload(), 2000);
+        }
+    })
+    .catch(error => {
+        messageElement.innerHTML = `<span class="text-danger">Błąd serwera: ${error.message}</span>`;
+    });
+}
