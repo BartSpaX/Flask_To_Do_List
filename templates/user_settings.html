@@ -17,15 +17,16 @@
         <!-- Pasek nawigacyjny -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                {% if current_user.is_authenticated and current_user.role == "admin" %}
-                    <a href="/admin" class="btn btn-warning">Panel Admina</a>
-                {% endif %}
-            </div>
-            <div>
                 {% if current_user.is_authenticated %}
                 <div>
                     <a href="/" class="btn btn-secondary">Powrót do strony głównej</a>
                 </div>
+                {% endif %}
+            </div>
+
+            <div>
+                {% if current_user.is_authenticated and current_user.role == "admin" %}
+                    <a href="/admin" class="btn btn-warning">Panel Admina</a>
                 {% endif %}
             </div>
             

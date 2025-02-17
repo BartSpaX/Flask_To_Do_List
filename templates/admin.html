@@ -17,6 +17,11 @@
                 <a href="/" class="btn btn-secondary">Powrót do strony głównej</a>
             </div>
             <div>
+                {% if current_user.is_authenticated and current_user.role == "admin" %}
+                    <a href="/admin/manage-users" class="btn btn-warning">Zarządzaj Użytkownikami</a>
+                {% endif %}
+            </div>
+            <div>
                 {% if current_user.is_authenticated %}
                     <a href="/user/settings" class="btn btn-warning">Panel Użytkownika</a>
                 {% endif %}
